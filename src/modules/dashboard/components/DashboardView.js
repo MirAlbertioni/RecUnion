@@ -11,7 +11,7 @@ class DashboardView extends React.Component {
         super(props);
 
         this.state = {
-            searchInput: "emine",
+            searchInput: "",
             selectedArtists: [],
             limit: 100,
             skip: 0,
