@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+
+.dashboard{
+  width: 100%;
+}
+
+.searchFields{
+    padding: 1rem;
+}
+
+.grid-one{
+  padding: 1rem;
+  width: 65%;
+}
+
+.grid-two{
+  padding: 1rem;
+  width: 300px;
+}
