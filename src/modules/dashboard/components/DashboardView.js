@@ -117,6 +117,7 @@ class DashboardView extends React.Component {
                                     <Column field="followers.total" title="followers" width="150px" />
                                 </Grid>
                             </div>
+                        
                             <div className="grid-two">
                                 <Grid
                                     data={this.state.addedArtists}

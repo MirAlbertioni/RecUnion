@@ -47,10 +47,22 @@
 
 .grid-one{
   padding: 1rem;
-  width: 65%;
+  width: 70%;
 }
 
 .grid-two{
   padding: 1rem;
   width: 300px;
+}
+
+@media only screen and (max-width: 650px) {
+  .grid-one{
+    padding: 1rem;
+    width: 100%;
+  }
+  
+  .grid-two{
+    padding: 1rem;
+    width: 100%;
+  }
 }
