@@ -5,6 +5,7 @@ import { Grid, GridColumn as Column } from '@progress/kendo-react-grid';
 import '@progress/kendo-theme-default/dist/all.css';
 import './Dashboard.css';
 import { getArtists } from './../Actions/DashboardActions'
+import { MyCommandCell } from "./../../common/myCommandCell";
 
 class DashboardView extends React.Component {
     constructor(props) {
@@ -15,9 +16,45 @@ class DashboardView extends React.Component {
             selectedArtists: [],
             limit: 100,
             skip: 0,
-            take: 10,
+            take: 5,
             addedArtists: []
         };
+    }
+
+    pageChange = (event) => {
+        this.setState({
+            skip: event.page.skip,
+            take: event.page.take
+        });
+    }
+
+    CommandCellSearched = props => (
+        <MyCommandCell {...props} add={this.add} showAdd={true} showDelete={false} />
+    );
+
+    CommandCellAdded = props => (
+        <MyCommandCell {...props} remove={this.remove} showAdd={false} showDelete={true} />
+    );
+
+    remove = dataItem => {
+        var addedArtists = [...this.state.addedArtists];
+        var index = addedArtists.indexOf(dataItem)
+        if (index !== -1) {
+            addedArtists.splice(index, 1);
+            this.setState({ addedArtists });
+        }
+    };
+
+    add = dataItem => {
+        let addedArtists = this.state.addedArtists;
+        addedArtists.push(dataItem);
+        this.setState({ addedArtists });
+    };
+
+    onKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            this.handleSearch();
+        }
     }
 
     handleChange = (e) => {
@@ -30,57 +67,6 @@ class DashboardView extends React.Component {
         this.props.dispatch(getArtists(this.state.searchInput));
     }
 
-    headerSelectionChange = (event) => {
-        const checked = event.syntheticEvent.target.checked;
-        const data = this.props.artists.map(item => {
-            item.selected = checked;
-            return item;
-        });
-        this.setState({ data });
-    }
-
-    rowClick = event => {
-        let last = this.lastSelectedIndex;
-        const data = [...this.props.artists];
-        const current = data.findIndex(dataItem => dataItem === event.dataItem);
-
-        if (!event.nativeEvent.shiftKey) {
-            this.lastSelectedIndex = last = current;
-        }
-
-        if (!event.nativeEvent.ctrlKey) {
-            data.forEach(item => (item.selected = false));
-        }
-        const select = !event.dataItem.selected;
-        let addedArtists = this.state.addedArtists;
-        for (let i = Math.min(last, current); i <= Math.max(last, current); i++) {
-            data[i].selected = select;
-            addedArtists.push(data[i]);
-        }
-
-        this.setState({
-            artists: data,
-            addedArtists
-        });
-    }
-
-    selectionChange = (event) => {
-        const data = this.props.artists.map(item => {
-            if (item.ProductID === event.dataItem.ProductID) {
-                item.selected = !event.dataItem.selected;
-            }
-            return item;
-        });
-        this.setState({ artists: data });
-    }
-
-    pageChange = (event) => {
-        this.setState({
-            skip: event.page.skip,
-            take: event.page.take
-        });
-    }
-
     render() {
         return (
             <React.Fragment>
@@ -91,6 +77,7 @@ class DashboardView extends React.Component {
                                 <input
                                     onChange={this.handleChange}
                                     value={this.state.searchInput}
+                                    onKeyDown={this.onKeyPress}
                                 />
                                 <button
                                     className="add-todo"
@@ -111,18 +98,21 @@ class DashboardView extends React.Component {
                                     total={this.props.artists.length}
                                     pageable={true}
                                     onPageChange={this.pageChange} >
+                                    <Column cell={this.CommandCellSearched} width="150px" />
                                     <Column field="name" title="name" width="300px" />
                                     <Column field="type" title="type" width="100px" />
                                     <Column field="genres" title="genres" width="200px" />
                                     <Column field="followers.total" title="followers" width="150px" />
                                 </Grid>
                             </div>
-                        
+
                             <div className="grid-two">
                                 <Grid
                                     data={this.state.addedArtists}
                                     onPageChange={this.pageChange} >
                                     <Column field="name" title="name" width="300px" />
+                                    <Column field="followers.total" title="followers" width="150px" />
+                                    <Column cell={this.CommandCellAdded} width="150px" />
                                 </Grid>
                             </div>
                         </div>
