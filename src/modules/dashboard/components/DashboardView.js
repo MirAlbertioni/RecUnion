@@ -13,7 +13,6 @@ class DashboardView extends React.Component {
 
         this.state = {
             searchInput: "",
-            selectedArtists: [],
             limit: 100,
             skip: 0,
             take: 5,
@@ -29,11 +28,18 @@ class DashboardView extends React.Component {
     }
 
     CommandCellSearched = props => (
-        <MyCommandCell {...props} add={this.add} showAdd={true} showDelete={false} />
+        <MyCommandCell {...props}
+            add={this.add}
+            showAdd={true}
+            showDelete={false}
+            addedArtists={this.state.addedArtists} />
     );
 
     CommandCellAdded = props => (
-        <MyCommandCell {...props} remove={this.remove} showAdd={false} showDelete={true} />
+        <MyCommandCell {...props}
+            remove={this.remove}
+            showAdd={false}
+            showDelete={true} />
     );
 
     remove = dataItem => {
@@ -47,6 +53,11 @@ class DashboardView extends React.Component {
 
     add = dataItem => {
         let addedArtists = this.state.addedArtists;
+        if (addedArtists.length >= 5) {
+            alert("Can not add more than 5");
+            return;
+            //this should be a dialog and not an alert
+        }
         addedArtists.push(dataItem);
         this.setState({ addedArtists });
     };
